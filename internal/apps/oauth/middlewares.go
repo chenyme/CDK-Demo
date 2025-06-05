@@ -36,6 +36,7 @@ func LoginRequired() gin.HandlerFunc {
 		// log
 		logger.InfoF(ctx, "[LoginRequired] %d %s", user.ID, user.Username)
 
+
 		// next
 		c.Next()
 	}
