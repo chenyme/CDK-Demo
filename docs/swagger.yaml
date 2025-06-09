@@ -121,16 +121,16 @@ definitions:
           type: string
         minItems: 1
         type: array
+      project_tags:
+        items:
+          type: string
+        type: array
       risk_level:
         maximum: 100
         minimum: 0
         type: integer
       start_time:
         type: string
-      tags:
-        items:
-          type: string
-        type: array
     required:
     - end_time
     - name
@@ -149,7 +149,7 @@ definitions:
     properties:
       allow_same_ip:
         type: boolean
-      claimed_items:
+      available_items_count:
         type: integer
       created_at:
         type: string
@@ -254,16 +254,16 @@ definitions:
         items:
           type: string
         type: array
+      project_tags:
+        items:
+          type: string
+        type: array
       risk_level:
         maximum: 100
         minimum: 0
         type: integer
       start_time:
         type: string
-      tags:
-        items:
-          type: string
-        type: array
     required:
     - end_time
     - name

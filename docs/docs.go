@@ -513,6 +513,12 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "project_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "risk_level": {
                     "type": "integer",
                     "maximum": 100,
@@ -520,12 +526,6 @@ const docTemplate = `{
                 },
                 "start_time": {
                     "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },
@@ -546,7 +546,7 @@ const docTemplate = `{
                 "allow_same_ip": {
                     "type": "boolean"
                 },
-                "claimed_items": {
+                "available_items_count": {
                     "type": "integer"
                 },
                 "created_at": {
@@ -710,6 +710,12 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "project_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "risk_level": {
                     "type": "integer",
                     "maximum": 100,
@@ -717,12 +723,6 @@ const docTemplate = `{
                 },
                 "start_time": {
                     "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         }
