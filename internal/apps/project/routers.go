@@ -5,7 +5,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/linux-do/cdk/internal/apps/oauth"
 	"github.com/linux-do/cdk/internal/db"
-	"errors"
 	"gorm.io/gorm"
 	"net/http"
 	"time"
@@ -121,7 +120,7 @@ func CreateProject(c *gin.Context) {
 				return err
 			}
 			// create tags
-			if err := project.RefreshTags(tx, req.Tags); err != nil {
+			if err := project.RefreshTags(tx, req.ProjectTags); err != nil {
 				return err
 			}
 			// create content
@@ -185,7 +184,7 @@ func UpdateProject(c *gin.Context) {
 				return err
 			}
 			// save tags
-			if err := project.RefreshTags(tx, req.Tags); err != nil {
+			if err := project.RefreshTags(tx, req.ProjectTags); err != nil {
 				return err
 			}
 			// add items
