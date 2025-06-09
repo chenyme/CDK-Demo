@@ -58,6 +58,29 @@ definitions:
     - TrustLevelUser
     - TrustLevelActiveUser
     - TrustLevelLeader
+  oauth.User:
+    properties:
+      avatar_url:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      last_login_at;index:
+        type: string
+      nickname:
+        type: string
+      score:
+        type: integer
+      trust_level:
+        $ref: '#/definitions/oauth.TrustLevel'
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
   oauth.UserInfoResponse:
     properties:
       data:
@@ -122,6 +145,47 @@ definitions:
     x-enum-varnames:
     - DistributionTypeOneForEach
     - DistributionTypeInvite
+  project.GetProjectResponseData:
+    properties:
+      allow_same_ip:
+        type: boolean
+      claimed_items:
+        type: integer
+      created_at:
+        type: string
+      creator:
+        allOf:
+        - $ref: '#/definitions/oauth.User'
+        description: Assuming we want to embed Creator info
+      creator_id:
+        type: integer
+      description:
+        type: string
+      distribution_type:
+        $ref: '#/definitions/project.DistributionType'
+      end_time:
+        type: string
+      id:
+        type: string
+      minimum_trust_level:
+        $ref: '#/definitions/oauth.TrustLevel'
+      name:
+        type: string
+      project_tags:
+        items:
+          type: string
+        type: array
+      risk_level:
+        type: integer
+      start_time:
+        type: string
+      total_project_items:
+        description: Renamed from TotalItems to avoid conflict if Project model is
+          embedded
+        type: integer
+      updated_at:
+        type: string
+    type: object
   project.ListReceiveHistoryResponse:
     properties:
       data:
@@ -313,6 +377,42 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/project.ProjectResponse'
+      tags:
+      - project
+    get:
+      description: 获取指定项目所有信息以及领取情况 (Get all information and claim status for a specific
+        project)
+      parameters:
+      - description: 项目ID (Project ID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/project.ProjectResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/project.GetProjectResponseData'
+              type: object
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/project.ProjectResponse'
+        "404":
+          description: Project not found
+          schema:
+            $ref: '#/definitions/project.ProjectResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/project.ProjectResponse'
+      summary: 获取指定项目信息 (Get specific project information)
       tags:
       - project
     put:
