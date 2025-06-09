@@ -30,10 +30,10 @@ type Project struct {
 }
 
 func (p *Project) Exact(tx *gorm.DB, id string) error {
-    if err := tx.Preload("Creator").Where("id = ?", id).First(p).Error; err != nil {
-        return err
-    }
-    return nil
+	if err := tx.Preload("Creator").Where("id = ?", id).First(p).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *Project) ItemsKey() string {
