@@ -26,10 +26,11 @@ type ProjectRequest struct {
 	RiskLevel         int8             `json:"risk_level" binding:"min=0,max=100"`
 }
 type GetProjectResponseData struct {
-    Project           `json:",inline"`      // 内嵌所有 Project 字段
-    Creator           oauth.User   `json:"creator"`
-    Tags              []string     `json:"tags"`
-    AvailableItemsCount int64       `json:"available_items_count"`
+    Project             `json:",inline"`      // 内嵌所有 Project 字段
+    CreatorUsername     string       `json:"creator_username"`
+    CreatorNickname     string       `json:"creator_nickname"`
+    Tags                []string     `json:"tags"`
+    AvailableItemsCount int64        `json:"available_items_count"`
 }
 
 // GetProject
@@ -64,9 +65,10 @@ func GetProject(c *gin.Context) {
 	availableItemsCount := stock
 
 	responseData := GetProjectResponseData{
-	    Project:      project,
-	    Creator:      project.Creator,
-	    Tags:         tags,
+	    Project:             project,
+	    CreatorUsername:     project.Creator.Username,
+	    CreatorNickname:     project.Creator.Nickname,
+	    Tags:                tags,
 	    AvailableItemsCount: availableItemsCount,
 	}
 

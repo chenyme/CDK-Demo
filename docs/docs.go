@@ -411,41 +411,6 @@ const docTemplate = `{
                 "TrustLevelLeader"
             ]
         },
-        "oauth.User": {
-            "type": "object",
-            "properties": {
-                "avatar_url": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_active": {
-                    "type": "boolean"
-                },
-                "last_login_at;index": {
-                    "type": "string"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "score": {
-                    "type": "integer"
-                },
-                "trust_level": {
-                    "$ref": "#/definitions/oauth.TrustLevel"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "oauth.UserInfoResponse": {
             "type": "object",
             "properties": {
@@ -552,11 +517,14 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "creator": {
-                    "$ref": "#/definitions/oauth.User"
-                },
                 "creator_id": {
                     "type": "integer"
+                },
+                "creator_nickname": {
+                    "type": "string"
+                },
+                "creator_username": {
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"
