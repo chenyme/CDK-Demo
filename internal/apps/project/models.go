@@ -30,10 +30,10 @@ type Project struct {
 }
 
 func (p *Project) Exact(tx *gorm.DB, id string) error {
-	if err := tx.Where("id = ?", id).First(p).Error; err != nil {
-		return err
-	}
-	return nil
+    if err := tx.Preload("Creator").Where("id = ?", id).First(p).Error; err != nil {
+        return err
+    }
+    return nil
 }
 
 func (p *Project) ItemsKey() string {
@@ -41,13 +41,12 @@ func (p *Project) ItemsKey() string {
 }
 
 func (p *Project) RefreshTags(tx *gorm.DB, tags []string) error {
-	// skip create
-	if len(tags) <= 0 {
-		return nil
-	}
 	// delete exist tags
 	if err := tx.Where("project_id = ?", p.ID).Delete(&ProjectTag{}).Error; err != nil {
 		return err
+	}
+	if len(tags) <= 0 {
+		return nil
 	}
 	// create tags
 	projectTags := make([]ProjectTag, len(tags))
@@ -58,6 +57,19 @@ func (p *Project) RefreshTags(tx *gorm.DB, tags []string) error {
 		return err
 	}
 	return nil
+}
+
+// GetTags retrieves all tags associated with the project.
+func (p *Project) GetTags(tx *gorm.DB) ([]string, error) {
+    var projectTags []ProjectTag
+    if err := tx.Where("project_id = ?", p.ID).Find(&projectTags).Error; err != nil {
+        return nil, err
+    }
+    tags := make([]string, len(projectTags))
+    for i, pt := range projectTags {
+        tags[i] = pt.Tag
+    }
+    return tags, nil
 }
 
 func (p *Project) CreateItems(ctx context.Context, tx *gorm.DB, items []string) error {
