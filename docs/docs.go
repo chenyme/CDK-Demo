@@ -203,24 +203,6 @@ const docTemplate = `{
                                 }
                             ]
                         }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/project.ProjectResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Project not found",
-                        "schema": {
-                            "$ref": "#/definitions/project.ProjectResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/project.ProjectResponse"
-                        }
                     }
                 }
             },
@@ -531,12 +513,6 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "project_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "risk_level": {
                     "type": "integer",
                     "maximum": 100,
@@ -544,6 +520,12 @@ const docTemplate = `{
                 },
                 "start_time": {
                     "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -571,12 +553,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "creator": {
-                    "description": "Assuming we want to embed Creator info",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/oauth.User"
-                        }
-                    ]
+                    "$ref": "#/definitions/oauth.User"
                 },
                 "creator_id": {
                     "type": "integer"
@@ -599,20 +576,19 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "project_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "risk_level": {
                     "type": "integer"
                 },
                 "start_time": {
                     "type": "string"
                 },
-                "total_project_items": {
-                    "description": "Renamed from TotalItems to avoid conflict if Project model is embedded",
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "total_items": {
                     "type": "integer"
                 },
                 "updated_at": {
@@ -734,12 +710,6 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "project_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "risk_level": {
                     "type": "integer",
                     "maximum": 100,
@@ -747,6 +717,12 @@ const docTemplate = `{
                 },
                 "start_time": {
                     "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }
