@@ -61,13 +61,12 @@ func (p *Project) RefreshTags(tx *gorm.DB, tags []string) error {
 
 // GetTags retrieves all tags associated with the project.
 func (p *Project) GetTags(tx *gorm.DB) ([]string, error) {
-    var projectTags []ProjectTag
-    if err := tx.Where("project_id = ?", p.ID).Find(&projectTags).Error; err != nil {
+    var tags []string
+    if err := tx.Model(&ProjectTag{}).
+        Where("project_id = ?", p.ID).
+        Distinct("tag").
+        Pluck("tag", &tags).Error; err != nil {
         return nil, err
-    }
-    tags := make([]string, len(projectTags))
-    for i, pt := range projectTags {
-        tags[i] = pt.Tag
     }
     return tags, nil
 }

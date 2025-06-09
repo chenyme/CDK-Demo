@@ -19,7 +19,7 @@ type ProjectResponse struct {
 type ProjectRequest struct {
 	Name              string           `json:"name" binding:"required,min=1,max=32"`
 	Description       string           `json:"description" binding:"max=1024"`
-	Tags              []string         `json:"tags" binding:"dive,min=1,max=16"`
+	ProjectTags       []string         `json:"project_tags" binding:"dive,min=1,max=16"`
 	StartTime         time.Time        `json:"start_time" binding:"required"`
 	EndTime           time.Time        `json:"end_time" binding:"required,gtfield=StartTime"`
 	MinimumTrustLevel oauth.TrustLevel `json:"minimum_trust_level" binding:"oneof=0 1 2 3 4"`
@@ -30,7 +30,7 @@ type GetProjectResponseData struct {
     Project           `json:",inline"`      // 内嵌所有 Project 字段
     Creator           oauth.User   `json:"creator"`
     Tags              []string     `json:"tags"`
-    ClaimedItems      int64        `json:"claimed_items"`
+    AvailableItemsCount int64       `json:"available_items_count"`
 }
 
 // GetProject
@@ -44,35 +44,31 @@ type GetProjectResponseData struct {
 func GetProject(c *gin.Context) {
 	projectID := c.Param("id")
 
-	var projectDetails Project // Project struct is in the same package
-	if err := projectDetails.Exact(db.DB(c.Request.Context()), projectID); err != nil {
-	    if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, ProjectResponse{ErrorMsg: "Project not found"})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: "Error fetching project: " + err.Error()})
-		return
+	var project Project // Project struct is in the same package
+	if err := project.Exact(db.DB(c.Request.Context()), projectID); err != nil {
+	    c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: err.Error()})
+	    return
 	}
 
-	tags, err := projectDetails.GetTags(db.DB(c.Request.Context()))
+	tags, err := project.GetTags(db.DB(c.Request.Context()))
 	if err != nil {
-	    c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: "Error fetching project tags: " + err.Error()})
+	    c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: err.Error()})
 	    return
 	}
 
 	// compute claimed items using stock
-	stock, err := projectDetails.Stock(c.Request.Context())
+	stock, err := project.Stock(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: "Error fetching stock: " + err.Error()})
+		c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: err.Error()})
 		return
 	}
-	claimedItemsCount := projectDetails.TotalItems - stock
+	availableItemsCount := stock
 
 	responseData := GetProjectResponseData{
-	    Project:      projectDetails,
-	    Creator:      projectDetails.Creator,
+	    Project:      project,
+	    Creator:      project.Creator,
 	    Tags:         tags,
-	    ClaimedItems: claimedItemsCount,
+	    AvailableItemsCount: availableItemsCount,
 	}
 
 	c.JSON(http.StatusOK, ProjectResponse{Data: responseData})
