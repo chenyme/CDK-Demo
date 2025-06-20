@@ -1,6 +1,7 @@
 package project
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/linux-do/cdk/internal/apps/oauth"
@@ -32,6 +33,8 @@ type GetProjectResponseData struct {
 	CreatorNickname     string           `json:"creator_nickname"`
 	Tags                []string         `json:"tags"`
 	AvailableItemsCount int64            `json:"available_items_count"`
+	IsReceived          bool             `json:"is_received"`
+	ReceivedContent     string           `json:"received_content"`
 }
 
 // GetProject
@@ -65,12 +68,26 @@ func GetProject(c *gin.Context) {
 	}
 	availableItemsCount := stock
 
+	isReceived := false
+	receivedContent := ""
+	item, err := project.GetReceivedItem(c.Request.Context(), oauth.GetUserIDFromContext(c))
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusInternalServerError, ProjectResponse{ErrorMsg: err.Error()})
+		return
+	}
+	if err == nil {
+		isReceived = true
+		receivedContent = item.Content
+	}
+
 	responseData := GetProjectResponseData{
 		Project:             project,
 		CreatorUsername:     project.Creator.Username,
 		CreatorNickname:     project.Creator.Nickname,
 		Tags:                tags,
 		AvailableItemsCount: availableItemsCount,
+		IsReceived:          isReceived,
+		ReceivedContent:     receivedContent,
 	}
 
 	c.JSON(http.StatusOK, ProjectResponse{Data: responseData})
